@@ -7,6 +7,7 @@ class GameScene extends Phaser.Scene {
     this.load.audio('levelComplete', 'assets/sounds/level_complete.ogg');
     this.load.audio('lifeLost', 'assets/sounds/lifelost.ogg');
     this.load.audio('GameOver', 'assets/sounds/Death.ogg');
+    this.load.audio("bgm", "assets/sounds/spotlightbackground.mp3");
   }
 
   create() {
@@ -63,6 +64,11 @@ class GameScene extends Phaser.Scene {
     this.levelCompleteSound = this.sound.add('levelComplete');
     this.lifeLostSound = this.sound.add('lifeLost');
     this.gameOverSound = this.sound.add('GameOver');
+    if (!this.game.bgm) {
+  this.game.bgm = this.sound.add("bgm", { loop: true, volume: 0.4 });
+  this.game.bgm.play();
+}
+    
 
     // START FIRST ROUND
     this.startNewRound();
