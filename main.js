@@ -3,6 +3,12 @@ class GameScene extends Phaser.Scene {
     super("GameScene");
   }
 
+  preload(){
+    this.load.audio('levelComplete', 'assets/sounds/level_complete.ogg');
+    this.load.audio('lifeLost', 'assets/sounds/lifelost.ogg');
+    this.load.audio('GameOver', 'assets/sounds/Death.ogg');
+  }
+
   create() {
     // GRID CONSTANTS
     this.cols = 8;
@@ -52,6 +58,11 @@ class GameScene extends Phaser.Scene {
     // INPUT
     this.cursors = this.input.keyboard.createCursorKeys();
     this.input.keyboard.on("keydown", this.handleInput, this);
+
+    // added sound objects
+    this.levelCompleteSound = this.sound.add('levelComplete');
+    this.lifeLostSound = this.sound.add('lifeLost');
+    this.gameOverSound = this.sound.add('GameOver');
 
     // START FIRST ROUND
     this.startNewRound();
@@ -261,6 +272,8 @@ class GameScene extends Phaser.Scene {
 
   checkExitReached() {
     if (this.creep.col === this.exitCol && this.creep.row === this.exitRow) {
+      // new level sound --> add 
+      this.levelCompleteSound.play();
       this.score += 100;
       this.scoreText.setText("Score: " + this.score);
 
@@ -360,11 +373,16 @@ class GameScene extends Phaser.Scene {
     this.updateLivesText();
 
     if (this.lives <= 0) {
-      alert("GAME OVER");
-      location.reload();
+      // Game over sound --> add
+      this.gameOverSound.play();
+      this.time.delayedCall(250, () => {
+        alert("GAME OVER");
+        location.reload()});
       return;
     }
 
+    // LIFE LOST  sound --> add
+    this.lifeLostSound.play();
     // small pause on death
     this.time.delayedCall(500, () => {
       this.startNewRound();
